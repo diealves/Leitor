@@ -24,21 +24,21 @@
 
     /* Estilo para o código detectado */
     #code {
-      font-size: 20px;
+      font-size: 60px;
       font-weight: bold;
       color: #333;
     }
 
     /* Estilo para o botão */
     button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 40px 80px;
+      font-size: 64px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Leitor de Código de Barras</h1>
+  <h1>Identificador de Estudantes</h1>
 
   <!-- Div que exibe o scanner ao vivo -->
   <div id="scanner"></div>
@@ -50,6 +50,12 @@
   </div>
 
   <script>
+    // Função para tocar o som
+    function playSound() {
+      var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');  // URL do som de beep
+      audio.play();
+    }
+
     Quagga.init(
       {
         inputStream: {
@@ -72,6 +78,7 @@
 
     Quagga.onDetected(function (data) {
       document.getElementById("code").textContent = data.codeResult.code;
+      playSound();  // Toca o som quando o código é detectado
     });
   </script>
 </body>
