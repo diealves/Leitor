@@ -13,12 +13,18 @@
 </head>
 <body>
   <h1>Leitor de Código de Barras</h1>
+  
+  <div id="scanner"></div>  <!-- Esse é o local para exibir o scanner -->
+  
+  <p><strong>Código Detectado:</strong> <span id="code"></span></p>
+  <p><button>Verificar</button></p>
+
   <script>
     Quagga.init(
       {
         inputStream: {
           type: "LiveStream",
-          target: document.querySelector("#scanner"),
+          target: document.querySelector("#scanner"),  // Aqui estamos selecionando o div para mostrar o vídeo
         },
         decoder: {
           readers: ["code_128_reader", "ean_reader"],
@@ -39,9 +45,4 @@
     });
   </script>
 </body>
-<footer>
-  <div id="scanner"></div>~;
-  <p><strong>Código Detectado:</strong> <span id="code"></span></p>
-  <p><button>Verificar</button></p>
-</footer>
 </html>
