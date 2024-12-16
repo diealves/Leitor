@@ -134,10 +134,45 @@
         Quagga.start();
       }
     );
-
+  
+    // Função para parar a câmera e liberar recursos
+    function stopCamera() {
+      let stream = Quagga.camera.stream;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    }
+  
+    // Função para emitir som
+    function playSound() {
+      const audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); // URL de um som de "beep"
+      audio.play();
+    }
+  
+    // Função para vibrar o celular (apenas em dispositivos móveis)
+    function vibratePhone() {
+      if ("vibrate" in navigator) {
+        navigator.vibrate(500); // Vibra por 500ms
+      }
+    }
+  
+    // Evento após a detecção do código de barras
     Quagga.onDetected(function (data) {
-      document.getElementById("code").textContent = data.codeResult.code;
+      const code = data.codeResult.code;
+      document.getElementById("code").textContent = code;
+  
+      // Parar a câmera
+      stopCamera();
+  
+      // Tocar som e vibrar o celular
+      playSound();
+      vibratePhone();
     });
-  </script>
-</body>
-</html>
+  
+    // Evento de clicar no botão para recomeçar a leitura
+    document.getElementById("verifyButton").addEventListener("click", function() {
+      // Reiniciar o scanner
+      Quagga.start();
+      document.getElementById("code").textContent = "Nenhum";
+    });
+</script>
