@@ -35,7 +35,7 @@
       background-color: #fff;
       box-sizing: border-box;
       overflow: hidden;
-      display: block;
+      display: block; /* Corrige o comportamento */
     }
 
     video {
@@ -92,15 +92,11 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
-      margin: 5px;
+      margin: 10px;
     }
 
     button:hover {
       background-color: #0056b3;
-    }
-
-    #verifyButton {
-      display: none; /* Inicialmente oculto */
     }
   </style>
 </head>
@@ -113,83 +109,62 @@
   <!-- Área para o código detectado e os botões -->
   <div class="controls">
     <p><strong>Código Detectado:</strong> <span id="code">Nenhum</span></p>
-    <p>
-      <button id="restartButton">Reiniciar</button>
-      <button id="verifyButton">Verificar</button>
-    </p>
+    <button id="restartButton">Reiniciar</button>
+    <button id="verifyButton" style="display: none;">Verificar</button>
   </div>
 
+  <!-- Elemento de som -->
+  <audio id="notificationSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
   <script>
-    let isCodeDetected = false; // Controle para evitar múltiplas detecções
-    const restartButton = document.getElementById("restartButton");
-    const verifyButton = document.getElementById("verifyButton");
-    const codeElement = document.getElementById("code");
-
-    // Função para inicializar o scanner
-    function initializeScanner() {
-      Quagga.init(
-        {
-          inputStream: {
-            type: "LiveStream",
-            constraints: {
-              facingMode: "environment",
-            },
-            target: document.querySelector("#scanner"),
+    Quagga.init(
+      {
+        inputStream: {
+          type: "LiveStream",
+          constraints: {
+            facingMode: "environment"
           },
-          decoder: {
-            readers: ["code_39_reader"],
-          },
+          target: document.querySelector("#scanner"),
         },
-        function (err) {
-          if (err) {
-            console.error(err);
-            return;
-          }
-          console.log("Inicializado com sucesso!");
-          Quagga.start();
+        decoder: {
+          readers: ["code_39_reader"],
+        },
+      },
+      function (err) {
+        if (err) {
+          console.error(err);
+          return;
         }
-      );
-    }
-
-    // Função para parar o scanner
-    function stopScanner() {
-      Quagga.stop();
-      console.log("Scanner parado.");
-    }
-
-    // Função para vibrar o celular
-    function vibratePhone() {
-      if ("vibrate" in navigator) {
-        navigator.vibrate(500); // Vibra por 500ms
+        console.log("Inicializado com sucesso!");
+        Quagga.start();
       }
-    }
+    );
 
-    // Evento ao detectar um código de barras
+    // Evento após a detecção do código de barras
     Quagga.onDetected(function (data) {
-      if (!isCodeDetected) {
-        isCodeDetected = true; // Evita múltiplas execuções
-        const code = data.codeResult.code;
-        codeElement.textContent = code;
+      const code = data.codeResult.code;
+      document.getElementById("code").textContent = code;
 
-        // Notificar o usuário
-        vibratePhone(); // Vibração no celular
-        stopScanner(); // Parar o scanner
+      // Parar o scanner
+      Quagga.stop();
 
-        // Mostrar botão "Verificar"
-        verifyButton.style.display = "inline-block";
-      }
+      // Exibir o botão "Verificar"
+      document.getElementById("verifyButton").style.display = "inline-block";
+
+      // Emitir som de notificação
+      const sound = document.getElementById("notificationSound");
+      sound.play().catch((err) => console.error("Erro ao reproduzir som:", err));
     });
 
-    // Evento do botão "Reiniciar"
-    restartButton.addEventListener("click", function () {
-      isCodeDetected = false; // Permitir novas detecções
-      codeElement.textContent = "Nenhum"; // Resetar o texto do código
-      verifyButton.style.display = "none"; // Ocultar botão "Verificar"
-      Quagga.start(); // Reiniciar o scanner
+    // Evento para o botão "Reiniciar"
+    document.getElementById("restartButton").addEventListener("click", function () {
+      location.reload(); // Recarrega a página
     });
 
-    // Inicializa o scanner ao carregar a página
-    initializeScanner();
+    // Exemplo de funcionalidade para o botão "Verificar"
+    document.getElementById("verifyButton").addEventListener("click", function () {
+      alert("Função de verificação ainda não implementada!");
+    });
   </script>
 </body>
 </html>
