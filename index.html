@@ -79,7 +79,7 @@ body {
           target: document.querySelector("#scanner"),  // Onde o vídeo da câmera será exibido
         },
         decoder: {
-          readers: ["code_128_reader", "ean_reader"],
+          readers: ["code_39", "ean_reader"],
         },
       },
       function (err) {
